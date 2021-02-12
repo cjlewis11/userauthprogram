@@ -16,10 +16,20 @@ class UserCreation:
     This class will call on Static Methods found in the following classes:
         Authenticator
     '''
-    def __init__(self, userbase: UserManager):
-        self.__username = ""
-        self.__password = ""
-        self.__salt = ""
+    def __init__(self, userbase: UserManager, username="",password="",salt=""):
+        self.__username = username
+        self.__password = password
+        self.__salt = salt
+        self.__userbase = userbase
+
+    @classmethod
+    def createTestUser(self, username,password,salt,userbase: UserManager):
+        '''
+        This constructor is used for testing purposes.
+        '''
+        self.__username = username
+        self.__password = password
+        self.__salt = salt
         self.__userbase = userbase
 
     def create(self):
@@ -29,11 +39,14 @@ class UserCreation:
         UserManager class to store a new user.
         '''
 
-        if self.__gather_user_creation_details():
+        if self.gather_user_creation_details():
             self.__password = Authenticator.generate_hash(self.__password,self.__salt)
-            self.__userbase.store_new_user(self.__username, self.__salt, self.__password)
+            if(self.__userbase.store_new_user(self.__username, self.__salt, self.__password)):
+                return True
+            else:
+                return False
 
-    def __gather_user_creation_details(self) -> bool:
+    def gather_user_creation_details(self) -> bool:
         '''
         This function will run through the process of generating
         user credentials. It will also do some basic checking of valid entries.

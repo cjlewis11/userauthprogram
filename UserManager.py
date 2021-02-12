@@ -17,6 +17,8 @@ class UserManager:
         self.__activeToken = {}
 
     def generate_active_token(self, username):
+        if self.__activeToken:
+            self.__activeToken = {}
         token = secrets.token_bytes(16)
         self.__activeToken[token] = username
         return token
@@ -28,6 +30,8 @@ class UserManager:
             return False
 
     def get_user_from_token(self, token):
+        if token == "":
+            return ""
         return self.__activeToken[token]
 
     def is_existing_user(self, username):
@@ -40,13 +44,22 @@ class UserManager:
         return self.__userStorage[username]["hash"]
 
 
-    def store_new_user(self, username, salt, passHash):
+    def store_new_user(self, username, salt, passHash) -> bool:
+        if(username in self.__userStorage):
+            return False
         self.__userStorage[username] = {
                                         "salt":salt.decode(),
                                         "hash": passHash
                                       }
+        return True
 
     def logout_user(self, active_token) -> str:
+        if active_token == "":
+            return ""
+
         del self.__activeToken[active_token]
         print("Logged out successfully.")
         return ""
+
+    def get_total_users(self):
+        return len(self.__userStorage)
