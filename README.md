@@ -14,8 +14,14 @@ Testing was done utilzing Pytest and MagicMock
 To run:
   Ensure Python3 is installed. Python 3.6.9 was used to develop this.
 
-  Create a virtual enviroment using:
+  Create a virtual enviroment outside of the projet directory using:
     python -m venv env_name
+
+  Activate said virtual enviroment with (on unix based system):
+    source env_name/bin/activate
+
+  Navigate to project root folder
+    cd userauthprogram
 
   Install requirements from requirements.txt using pip
     pip install -r requirements.txt
