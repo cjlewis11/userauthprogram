@@ -1,3 +1,10 @@
+'''
+Chad J Lewis, 2/12/2021
+
+This module contains the class UserCreation which is used in creating new
+users.
+'''
+
 from getpass import getpass
 
 from UserManager import UserManager
@@ -16,6 +23,12 @@ class UserCreation:
         self.__userbase = userbase
 
     def create(self):
+        '''
+        This function handles the creation of a new user, it drives the process
+        by gathering wanted user credentials, then using existing methods in
+        UserManager class to store a new user.
+        '''
+
         if self.__gather_user_creation_details():
             self.__password = Authenticator.generate_hash(self.__password,self.__salt)
             self.__userbase.store_new_user(self.__username, self.__salt, self.__password)

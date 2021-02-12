@@ -1,13 +1,11 @@
 '''
 Chad Lewis 2/12/2021
 
-The assumption is that all user information must be stored locally.
-Doing so, we are assuming that there is no use of Databases allowed.
-Therefore this class acts as a "database" by using a file system that is updated
-whenever a user is added. It utlizies a dictionary data structure to ensure
-that there are no duplicate users and the file is loaded into a dictionary when
-initialized. In any other context, a database would be preferred for security
-and optimization purposes.
+The assumptions with being that we must store everything locally is that
+we are not allowd to use a database. In doing so, we are utilizing a dictionary
+structure that is non-persistent accross sessions. This means that our users
+and passwords are reset every time. Had I been able to use a database, this
+problem wouldn't exist.
 '''
 import csv
 import secrets
@@ -16,27 +14,21 @@ class UserManager:
     def __init__(self):
         self.__filename = "storage.csv"
         self.__userStorage = {}
-        self.__createDictionary()
         self.__activeToken = {}
-
-    def __createDictionary(self):
-        '''
-        This method will create a dictionary structure based on the
-        file set in the initialization of this class.
-        '''
-        with open(self.__filename, newline = '') as csvfile:
-            reader = csv.reader(csvfile, delimiter=' ')
-            for row in reader:
-                self.__userStorage[row[0]] = {
-                                                "salt": row[1],
-                                                "hash": row[2]
-                                             }
-            print(self.__userStorage)
 
     def generate_active_token(self, username):
         token = secrets.token_bytes(16)
         self.__activeToken[token] = username
-        print(self.__activeToken)
+        return token
+
+    def is_active_token(self):
+        if self.__activeToken:
+            return True
+        else:
+            return False
+
+    def get_user_from_token(self, token):
+        return self.__activeToken[token]
 
     def is_existing_user(self, username):
         return username in self.__userStorage
@@ -49,24 +41,12 @@ class UserManager:
 
 
     def store_new_user(self, username, salt, passHash):
-        print(username)
         self.__userStorage[username] = {
                                         "salt":salt.decode(),
                                         "hash": passHash
                                       }
-        print(self.__userStorage)
 
-    def exit_routine(self):
-        rows = []
-        for key in self.__userStorage.keys():
-            temp = []
-            temp.append(key)
-            entries = self.__userStorage[key]
-            temp.append(entries["salt"])
-            temp.append(entries["hash"])
-            rows.append(temp)
-
-        with open(self.__filename, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile, delimiter=' ')
-            for row in rows:
-                writer.writerow(row)
+    def logout_user(self, active_token) -> str:
+        del self.__activeToken[active_token]
+        print("Logged out successfully.")
+        return ""
