@@ -5,6 +5,7 @@
 # core fucntionality, e.g. creating a user.
 from UserCreation import UserCreation
 from UserManager import UserManager
+from Authenticator import Authenticator
 
 def main():
     option_functions = {
@@ -38,7 +39,8 @@ def create_new_user(userbase: UserManager) -> bool:
     creator.create()
 
 def login_existing_user(userbase: UserManager):
-    print('login')
+    auther = Authenticator(userbase)
+    auther.login()
 
 def logout_current_user(userbase: UserManager):
     print('logout')

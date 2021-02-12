@@ -10,12 +10,14 @@ initialized. In any other context, a database would be preferred for security
 and optimization purposes.
 '''
 import csv
+import secrets
 
 class UserManager:
     def __init__(self):
         self.__filename = "storage.csv"
         self.__userStorage = {}
         self.__createDictionary()
+        self.__activeToken = {}
 
     def __createDictionary(self):
         '''
@@ -29,14 +31,27 @@ class UserManager:
                                                 "salt": row[1],
                                                 "hash": row[2]
                                              }
+            print(self.__userStorage)
+
+    def generate_active_token(self, username):
+        token = secrets.token_bytes(16)
+        self.__activeToken[token] = username
+        print(self.__activeToken)
 
     def is_existing_user(self, username):
         return username in self.__userStorage
 
+    def get_user_salt(self, username) -> str:
+        return self.__userStorage[username]["salt"]
+
+    def get_user_hash(self, username) -> str:
+        return self.__userStorage[username]["hash"]
+
+
     def store_new_user(self, username, salt, passHash):
         print(username)
         self.__userStorage[username] = {
-                                        "salt":salt,
+                                        "salt":salt.decode(),
                                         "hash": passHash
                                       }
         print(self.__userStorage)
@@ -50,8 +65,6 @@ class UserManager:
             temp.append(entries["salt"])
             temp.append(entries["hash"])
             rows.append(temp)
-
-        print(rows)
 
         with open(self.__filename, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=' ')

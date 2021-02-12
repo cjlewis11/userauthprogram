@@ -17,8 +17,8 @@ class UserCreation:
 
     def create(self):
         if self.__gather_user_creation_details():
-            self.__password = Authenticator.generate_hash(self.__password.encode(),self.__salt)
-            self.__userbase.store_new_user(self.__username, self.__password, self.__salt)
+            self.__password = Authenticator.generate_hash(self.__password,self.__salt)
+            self.__userbase.store_new_user(self.__username, self.__salt, self.__password)
 
     def __gather_user_creation_details(self) -> bool:
         '''
@@ -33,7 +33,7 @@ class UserCreation:
             print("Username already exists, please try again.")
             return False
         self.__username = desired_username
-        
+
         # Password input and validation checking.
         desired_pass = getpass("Desired Password:")
         pass_secondattempt = getpass("Please re-enter your desired password:")
