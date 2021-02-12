@@ -124,7 +124,7 @@ def gather_user_input():
     else:
         return "input_error"
 
-def input_error():
+def input_error(active_token, userbase: UserManager):
     print("Please enter a valid option")
 
 if __name__ == '__main__':

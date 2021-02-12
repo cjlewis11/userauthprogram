@@ -17,10 +17,10 @@ class Authenticator:
     during the Creation of a new User. All non-static methods are used to login
     and verify attempts using PBKDF2 hashing.
     '''
-    def __init__(self, userbase: UserManager):
-        self.__username = ""
-        self.__password = ""
-        self.__salt = ""
+    def __init__(self, userbase: UserManager, username="",password="",salt=""):
+        self.__username = username
+        self.__password = password
+        self.__salt = salt 
         self.__userbase = userbase
 
     def login(self) -> str:
@@ -30,11 +30,11 @@ class Authenticator:
         that login information is correct based on PBKDF2 hash.
         '''
 
-        if self.__collect_user_credentials():
+        if self.collect_user_credentials():
             return self.__verify_login()
 
 
-    def __collect_user_credentials(self):
+    def collect_user_credentials(self):
         '''
         This function will run through the process of gathering user credentials
         for logging in.
